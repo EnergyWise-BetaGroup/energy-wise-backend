@@ -1,28 +1,28 @@
-- hosts: development
+- hosts: development  # Replace with your inventory group or host
   become: true
   tasks:
-    - name: Update packages
-      yum:
-        name: '*'
-        state: latest
-      become: true
+    - name: Update package list
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages to the latest version
+      apt:
+        upgrade: dist
 
     - name: Install Docker
-      yum:
-        name: docker
+      apt:
+        name: docker.io  # Use docker.io for Ubuntu
         state: present
-      become: true
 
     - name: Start Docker service
       service:
         name: docker
         state: started
         enabled: yes
-      become: true
 
-    - name: Add ec2-user to docker group
+    - name: Add user to docker group
       user:
-        name: ec2-user
+        name: ec2-user  # Change to your actual username if different
         groups: docker
         append: yes
 
