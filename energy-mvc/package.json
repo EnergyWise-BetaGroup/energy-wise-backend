@@ -17,6 +17,7 @@
     "retry": "^0.13.1"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^3.1.4"
   }
 }
