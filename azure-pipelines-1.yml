@@ -67,7 +67,7 @@ stages:
 #         allowTelemetryCollection: true
     
     - task: TerraformCLI@2
-      displayName: 'Terraform apply'
+      displayName: 'Terraform destroy'
       inputs:
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
