@@ -50,7 +50,7 @@ stages:
         backendServiceArm: 'azure-resource-manager-service-connection'
         backendAzureRmSubscriptionId: '09059aa9-15cd-4ad2-a4e7-864b5dc2ea35'
         ensureBackend: true
-        backendAzureRmResourceGroupName: 'my-resource-group'
+        backendAzureRmResourceGroupName: 'my-resource-group-bg'
         backendAzureRmResourceGroupLocation: 'East US'
         backendAzureRmStorageAccountName: 'storageaccounterikras'
         backendAzureRmContainerName: 'storageaccounterikrascontainer'
