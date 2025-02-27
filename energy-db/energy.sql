@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS co2_intensity;
 
 CREATE TABLE registration_info
   (
-    registration_id BIGINT, 
+    registration_id BIGINT GENERATED ALWAYS AS IDENTITY, 
     name VARCHAR(50) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(150) NOT NULL UNIQUE,
