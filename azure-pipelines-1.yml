@@ -27,3 +27,33 @@ stages:
         tags: |
           $(tag)
           $(latestTag)
+
+- stage: apply
+  displayName: terraform apply
+  jobs:
+  - job: apply
+    displayName: terraform apply
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+
+    - task: DownloadSecureFile@1
+      name: publickey
+      inputs:
+        secureFile: 'azure_rsa.pub'
+    - task: TerraformCLI@2
+      displayName: 'Terraform Init'
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
+        backendType: 'azurerm'
+        backendServiceArm: 'azure-resource-manager-service-connection'
+        backendAzureRmSubscriptionId: '09059aa9-15cd-4ad2-a4e7-864b5dc2ea35'
+        ensureBackend: true
+        backendAzureRmResourceGroupName: 'my-resource-group'
+        backendAzureRmResourceGroupLocation: 'East US'
+        backendAzureRmStorageAccountName: 'storageaccounterikras'
+        backendAzureRmContainerName: 'storageaccounterikrascontainer'
+        backendAzureRmKey: 'kubernetes-dev.tfstate'
+        allowTelemetryCollection: true
