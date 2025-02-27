@@ -35,7 +35,7 @@ CREATE TABLE registration_info
     PRIMARY KEY (appliance_id)
   );
 
-  CREATE TABLE smart_meter_data 
+ CREATE TABLE smart_meter_data 
   (
     datatime_id BIGINT GENERATED ALWAYS AS IDENTITY,
     registration_id BIGINT,
