@@ -29,7 +29,7 @@ const login = async (req, res) => {
         const match = await bcrypt.compare(data.password, user.password);
 
         if (match) {
-            const payload = { login_id: user.login_id  }
+            const payload = { registration_id: user.registration_id  }
 
             jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: 3600 }, (err, token) =>{
             if(err){ throw new Error('Error in token generation') }
