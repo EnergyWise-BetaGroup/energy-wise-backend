@@ -35,7 +35,7 @@ CREATE TABLE registration_info
     PRIMARY KEY (appliance_id)
   );
 
- CREATE TABLE smart_meter_data 
+  CREATE TABLE smart_meter_data 
   (
     datatime_id BIGINT GENERATED ALWAYS AS IDENTITY,
     registration_id BIGINT,
@@ -74,8 +74,8 @@ EXECUTE FUNCTION update_timestamp();
 
 INSERT INTO registration_info (registration_id, name, username, email, password, house_size, postcode, region, provider, api_key, created_at, updated_at) 
 VALUES
-(401, 'John Doe', 'johndoe', 'johndoe@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 120, '1234567', 'England', 'Provider A', 'APIKEY12345', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
-(402, 'Jane Smith', 'janesmith', 'janesmith@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
+(401, 'John Doe', 'johndoe', 'johndoe@example.com', 'hashedpassword1', 120, '1234567', 'England', 'Provider A', 'APIKEY12345', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
+(402, 'Jane Smith', 'janesmith', 'janesmith@example.com', 'hashedpassword2', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
 
 INSERT INTO appliances (registration_id, washing_machine, dryer, electric_vehicle, laptops, desktop_computer, fridge, freezer) 
 VALUES
