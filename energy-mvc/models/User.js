@@ -9,11 +9,10 @@ class User {
         this.postcode = postcode;
         this.email = email;
         this.region = region;
-        this.account_number = account_number
     }
 
     static async getOneByUsername(username) {
-        const response = await db.query("SELECT registration_id, username, account_number, email  FROM registration_info WHERE username = $1", [username]);
+        const response = await db.query("SELECT registration_id, username, password FROM registration_info WHERE username = $1", [username]);
         if (response.rows.length != 1) {
             throw new Error("Unable to locate user.");
         }
