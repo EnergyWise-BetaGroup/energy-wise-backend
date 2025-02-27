@@ -20,7 +20,7 @@ stages:
     - task: Docker@2
       displayName: Build an image
       inputs:
-        containerRegistry: 'erikrasniqi-docker-hub'
+        containerRegistry: 'docker'
         repository: 'erikrasniqi/energywise'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
