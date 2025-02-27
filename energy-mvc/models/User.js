@@ -20,7 +20,7 @@ class User {
     }
 
     static async getOneById(registration_id) {
-        const response = await db.query("SELECT registration_id, email, username FROM registration_info WHERE registration_id = $1", [registration_id]);
+        const response = await db.query("SELECT * FROM registration_info WHERE registration_id = $1", [registration_id]);
         if (response.rows.length != 1) {
             throw new Error("Unable to locate user.");
         }
