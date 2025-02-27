@@ -1,25 +1,5 @@
 const db = require("../db/connect")
 
-/* SQL File for info
-CREATE TABLE registration_info
-  (
-    registration_id BIGINT GENERATED ALWAYS AS IDENTITY, 
-    account_number VARCHAR(30) ,
-    name VARCHAR(50) NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(150) NOT NULL,
-    password VARCHAR(64) NOT NULL,
-    house_size INTEGER, 
-    postcode VARCHAR(7) NOT NULL,
-    region VARCHAR(30) NOT NULL,
-    provider VARCHAR(50),
-    api_key VARCHAR(20),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, 
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, --need to be changed 
-    PRIMARY KEY(registration_id)
-  );
-*/
-
 class User {
     constructor({ registration_id, name, password, username, email, postcode, region}) {
         this.registration_id = registration_id;
@@ -29,10 +9,11 @@ class User {
         this.postcode = postcode;
         this.email = email;
         this.region = region;
+        this.account_number = account_number
     }
 
     static async getOneByUsername(username) {
-        const response = await db.query("SELECT registration_id, username, password FROM registration_info WHERE username = $1", [username]);
+        const response = await db.query("SELECT registration_id, username, account_number, email  FROM registration_info WHERE username = $1", [username]);
         if (response.rows.length != 1) {
             throw new Error("Unable to locate user.");
         }
@@ -40,7 +21,7 @@ class User {
     }
 
     static async getOneById(registration_id) {
-        const response = await db.query("SELECT registration_id, username FROM registration_info WHERE registration_id = $1", [registration_id]);
+        const response = await db.query("SELECT registration_id, email, username FROM registration_info WHERE registration_id = $1", [registration_id]);
         if (response.rows.length != 1) {
             throw new Error("Unable to locate user.");
         }
