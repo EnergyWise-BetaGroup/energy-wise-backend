@@ -1,6 +1,8 @@
 provider "azurerm" {
   features {}
   subscription_id = "09059aa9-15cd-4ad2-a4e7-864b5dc2ea35"
+  client_id       = var.client_id
+  client_secret   = var.client_secret
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -106,7 +108,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = "azureuser"
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = file(var.ssh_public_key)
   }
 
   os_disk {

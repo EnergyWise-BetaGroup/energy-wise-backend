@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS co2_intensity;
 
 CREATE TABLE registration_info
   (
-    registration_id BIGINT, 
+    registration_id INT GENERATED ALWAYS AS IDENTITY, 
     name VARCHAR(50) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(150) NOT NULL UNIQUE,
@@ -72,10 +72,10 @@ FOR EACH ROW
 EXECUTE FUNCTION update_timestamp();
 
 
-INSERT INTO registration_info (registration_id, name, username, email, password, house_size, postcode, region, provider, api_key, created_at, updated_at) 
+INSERT INTO registration_info (name, username, email, password, house_size, postcode, region, provider, api_key, created_at, updated_at) 
 VALUES
-(401, 'John Doe', 'johndoe', 'johndoe@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 120, '1234567', 'England', 'Provider A', 'APIKEY12345', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
-(402, 'Jane Smith', 'janesmith', 'janesmith@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
+('John Doe', 'johndoe', 'johndoe@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 120, '1234567', 'England', 'Provider A', 'APIKEY12345', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
+('Jane Smith', 'janesmith', 'janesmith@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
 
 INSERT INTO appliances (registration_id, washing_machine, dryer, electric_vehicle, laptops, desktop_computer, fridge, freezer) 
 VALUES
