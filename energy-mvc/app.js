@@ -1,8 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 
-const logger = require('./logger')
-const tourDeFranceRouter = require('./router/tourDeFrance')
+const usersRounter = require('./router/users')
 
 
 const app = express()
@@ -10,13 +9,12 @@ const app = express()
 // Middleware
 app.use(express.json())
 app.use(cors())
-app.use(logger)
 
 // Routing
 app.get("/", (req, res) => {
-    res.send("Hello World!")
+    res.send({title: "EnergyWise", description: "A CO2 footprint calculator and monitoring tool"})
 })
 
-app.use('/tour-de-france', tourDeFranceRouter)
+app.use('/user', usersRounter)
 
 module.exports = app
