@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "test": "jest --watchAll --detectOpenHandles --runInBand --verbose",
+    "dev": "nodemon index.js",
+    "coverage": "jest --coverage --testPathPattern=/unit/"
   },
   "keywords": [],
   "author": "",

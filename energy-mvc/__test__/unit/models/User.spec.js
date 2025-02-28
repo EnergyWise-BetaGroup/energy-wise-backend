@@ -1,5 +1,5 @@
-const User = require('../../../models/User')
-const db = require('../../../database/connect')
+const {User} = require('../../../models/User')
+const db = require('../../../db/connect')
 
 describe('User Model', () => {
     beforeEach(() => jest.clearAllMocks())
@@ -18,6 +18,7 @@ describe('User Model', () => {
                 "region": "London"
             }
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{registration_id: 1}]})
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{...body, registration_id: 1}]})
 
             //Act
             const response = await User.create(body)
@@ -31,6 +32,7 @@ describe('User Model', () => {
                 [body.name, body.password, body.username, body.email, body.postcode, body.region]);
         });
         it("throws error if password or username missing", async () => {
+            
             //Arrange
             const body1 = {
                 "username": "Test",
