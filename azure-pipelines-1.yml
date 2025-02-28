@@ -51,6 +51,7 @@ stages:
         backendAzureRmContainerName: 'storageaccounterikrascontainer'
         backendAzureRmKey: 'kubernetes-dev.tfstate'
         allowTelemetryCollection: true
+        commandOptions: '-upgrade' 
 
 - stage: TerraformApply
   displayName: Terraform Apply
