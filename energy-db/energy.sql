@@ -277,5 +277,3 @@ VALUES
 (2, 1.02, '2025-02-22T19:30:00+00:00', '2025-02-22T20:00:00+00:00');
 
 
-
-SELECT * FROM current_energy_sources;
