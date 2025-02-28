@@ -2,6 +2,8 @@
 - name: Install Python 3 on remote hosts
   hosts: development
   become: yes  # Use sudo to run commands
+  gather_facts: no  # Skip gathering facts
+
   tasks:
     - name: Update apt package list
       apt:
