@@ -30,7 +30,7 @@ stages:
 
     - script: |
         mkdir -p ~/.ssh
-        mv $(sshKey.secureFilePath) ~/.ssh/azure_rsa
+        mv $(privateKey.secureFilePath) ~/.ssh/azure_rsa
         chmod 600 ~/.ssh/azure_rsa  # Set correct permissions
         eval "$(ssh-agent -s)"
         ssh-add ~/.ssh/azure_rsa
