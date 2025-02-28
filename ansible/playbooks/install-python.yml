@@ -1,0 +1,23 @@
+---
+- name: Install Python 3 on remote hosts
+  hosts: development
+  become: yes  # Use sudo to run commands
+  tasks:
+    - name: Update apt package list
+      apt:
+        update_cache: yes
+
+    - name: Install Python 3 and python3-apt
+      apt:
+        name:
+          - python3
+          - python3-apt
+        state: present
+
+    - name: Verify Python 3 installation
+      command: python3 --version
+      register: python_version
+
+    - name: Print Python 3 version
+      debug:
+        msg: "Python 3 version installed: {{ python_version.stdout }}"
