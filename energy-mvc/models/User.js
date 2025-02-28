@@ -32,7 +32,7 @@ class User {
         if(username == undefined || password == undefined) throw Error("Ensure username and password are both provided")
         let response = await db.query("INSERT INTO registration_info (name, password, username, email, postcode, region) VALUES ($1, $2, $3, $4, $5, $6) RETURNING registration_id;",
             [name, password, username, email, postcode, region]);
-        const newId = response.rows[0].login_id;
+        const newId = response.rows[0].registration_id_id;
         const newUser = await User.getOneById(newId);
         return newUser;
     }
