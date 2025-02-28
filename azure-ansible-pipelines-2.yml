@@ -28,7 +28,7 @@ stages:
         ansible --version
       displayName: 'Install Ansible'
 
-    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts --private-key $(Agent.TempDirectory)/$(privateKey.secureFilePath) -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
+    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts --private-key ~/.ssh/azure_rsa -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
       displayName: 'Run Ansible Playbook'
       env:
         AZURE_CLIENT_ID: $(ARM_CLIENT_ID)
