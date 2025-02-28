@@ -1,23 +1,23 @@
 version: '3.9'
 services:
-  bike-mvc:
-    image: erikrasniqi/bike-mvc:0.0.1.RELEASE
+  energy-mvc:
+    image: allredmatt/energy-mvc:latest
     ports:
       - "3000:3000"
     restart: always
     depends_on:
-      - bike-db
+      - energy-db
     networks:
-      - tour-network
+      - energy-network
 
-  bike-db:
-    image: erikrasniqi/bike-db:0.0.1.RELEASE
+  energy-db:
+    image: allredmatt/energy-db:latest
     ports:
       - "5432:5432"
     restart: always
     networks:
-      - tour-network
+      - energy-network
 
 networks:
-  tour-network:
+  energy-network:
 

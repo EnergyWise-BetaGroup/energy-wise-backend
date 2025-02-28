@@ -1,0 +1,37 @@
+trigger:
+- development-eri
+
+resources:
+- repo: self
+
+
+stages:
+- stage: InstallAndRunAnsible
+  displayName: Install and Run Ansible Playbooks
+  jobs:
+  - job: RunAnsible
+    displayName: Run Ansible Playbooks
+    pool:
+      vmImage: 'ubuntu-latest' 
+    steps:
+    - task: DownloadSecureFile@1
+      name: privateKey
+      inputs:
+        secureFile: 'azure_rsa.pub'
+
+    - script: |
+        # Install Ansible
+        sudo apt-get update
+        sudo apt-get install -y ansible
+
+        # Display Ansible version to confirm installation
+        ansible --version
+      displayName: 'Install Ansible'
+
+    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts --private-key $(Agent.TempDirectory)/$(privateKey.secureFileName) -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
+      displayName: 'Run Ansible Playbook'
+      env:
+        AZURE_CLIENT_ID: $(ARM_CLIENT_ID)
+        AZURE_SECRET: $(ARM_CLIENT_SECRET)
+        AZURE_TENANT: $(ARM_TENANT_ID)
+        AZURE_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
