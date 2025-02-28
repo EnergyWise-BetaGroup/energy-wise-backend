@@ -36,18 +36,26 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-
     - task: DownloadSecureFile@1
       name: publickey
       inputs:
         secureFile: 'azure_rsa.pub'
 
-    - script: rm -rf $(System.DefaultWorkingDirectory)/terraform/.terraform
-      displayName: 'Delete .terraform Folder (Fix Corrupt State)'
+    # Clear any previous .terraform folder and lock file
+    - script: |
+        rm -rf $(System.DefaultWorkingDirectory)/terraform/.terraform
+        rm -f $(System.DefaultWorkingDirectory)/terraform/.terraform.lock.hcl
+      displayName: 'Clean up Terraform State'
 
-    - script: rm -f $(System.DefaultWorkingDirectory)/terraform/.terraform.lock.hcl
-      displayName: 'Delete Terraform Lock File'
+    # Debugging: Show current directory and files
+    - script: |
+        echo "Current Directory:"
+        pwd
+        echo "Files in Terraform Directory:"
+        ls -la $(System.DefaultWorkingDirectory)/terraform
+      displayName: 'Debug Info'
 
+    # Terraform Init
     - task: TerraformCLI@2
       displayName: 'Terraform Init'
       inputs:
@@ -64,16 +72,91 @@ stages:
         backendAzureRmKey: 'kubernetes-dev.tfstate'
         allowTelemetryCollection: true
         commandOptions: '-upgrade'
-    
 
-
-
-    
+    # Terraform Apply
     - task: TerraformCLI@2
-      displayName: 'Terraform apply'
+      displayName: 'Terraform Apply'
       inputs:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceName: 'azure-resource-manager-service-connection'
-        commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
+        commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath) -auto-approve'
         allowTelemetryCollection: true
+
+# trigger:
+# - development-eri
+
+# resources:
+# - repo: self
+
+# variables:
+#   tag: '$(Build.BuildId)'
+#   latestTag: 'latest'
+
+# stages:
+# - stage: Build
+#   displayName: Build Docker Image
+#   jobs:
+#   - job: Build
+#     displayName: Build and Push Image
+#     pool:
+#       vmImage: ubuntu-latest
+#     steps:
+#     - task: Docker@2
+#       displayName: Build and Push Docker Image
+#       inputs:
+#         containerRegistry: 'docker'
+#         repository: 'erikrasniqi/energywise'
+#         command: 'buildAndPush'
+#         Dockerfile: '**/Dockerfile'
+#         tags: |
+#           $(tag)
+#           $(latestTag)
+
+# - stage: TerraformInit
+#   displayName: Terraform Initialization
+#   jobs:
+#   - job: Init
+#     displayName: Terraform Init
+#     pool:
+#       vmImage: ubuntu-latest
+#     steps:
+#     - task: TerraformCLI@2
+#       displayName: 'Terraform Init'
+#       inputs:
+#         command: 'init'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         backendType: 'azurerm'
+#         backendServiceArm: 'azure-resource-manager-service-connection'
+#         backendAzureRmSubscriptionId: '09059aa9-15cd-4ad2-a4e7-864b5dc2ea35'
+#         ensureBackend: true
+#         backendAzureRmResourceGroupName: 'my-resource-group-bg'
+#         backendAzureRmResourceGroupLocation: 'East US'
+#         backendAzureRmStorageAccountName: 'storageaccounterikras'
+#         backendAzureRmContainerName: 'storageaccounterikrascontainer'
+#         backendAzureRmKey: 'kubernetes-dev.tfstate'
+#         allowTelemetryCollection: true
+#         commandOptions: '-upgrade' 
+
+# - stage: TerraformApply
+#   displayName: Terraform Apply
+#   dependsOn: TerraformInit
+#   jobs:
+#   - job: Apply
+#     displayName: Apply Terraform Changes
+#     pool:
+#       vmImage: ubuntu-latest
+#     steps:
+#     - task: DownloadSecureFile@1
+#       name: publickey
+#       inputs:
+#         secureFile: 'azure_rsa.pub'
+
+#     - task: TerraformCLI@2
+#       displayName: 'Terraform Apply'
+#       inputs:
+#         command: 'apply'
+#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#         environmentServiceName: 'azure-resource-manager-service-connection'
+#         commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
+#         allowTelemetryCollection: true
