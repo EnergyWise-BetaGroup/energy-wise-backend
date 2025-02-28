@@ -24,14 +24,14 @@ stages:
         mkdir -p ~/.ssh
 
         # Move the key to .ssh directory
-        mv $(DownloadPrivateKey.secureFilePath) ~/.ssh/azure_rsa
+        mv $(DownloadPrivateKey.secureFilePath) ~/.ssh/azure_rsa.pub
 
         # Set correct permissions for the key
-        chmod 600 ~/.ssh/azure_rsa
+        chmod 600 ~/.ssh/azure_rsa.pub
 
         # Add the key to SSH agent (optional, but helps with some setups)
         eval $(ssh-agent -s)
-        ssh-add ~/.ssh/azure_rsa
+        ssh-add ~/.ssh/azure_rsa.pub
       displayName: 'Set SSH Key Permissions'
 
     - script: |
