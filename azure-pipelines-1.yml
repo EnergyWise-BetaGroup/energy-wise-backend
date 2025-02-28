@@ -36,11 +36,16 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+<<<<<<< HEAD
+=======
+
+>>>>>>> 23d1d7ac5ebfd438594fd03db0a682cf12c36cda
     - task: DownloadSecureFile@1
       name: publickey
       inputs:
         secureFile: 'azure_rsa.pub'
 
+<<<<<<< HEAD
     # Clear any previous .terraform folder and lock file
     - script: |
         rm -rf $(System.DefaultWorkingDirectory)/terraform/.terraform
@@ -56,6 +61,14 @@ stages:
       displayName: 'Debug Info'
 
     # Terraform Init
+=======
+    - script: rm -rf $(System.DefaultWorkingDirectory)/terraform/.terraform
+      displayName: 'Delete .terraform Folder (Fix Corrupt State)'
+
+    - script: rm -f $(System.DefaultWorkingDirectory)/terraform/.terraform.lock.hcl
+      displayName: 'Delete Terraform Lock File'
+
+>>>>>>> 23d1d7ac5ebfd438594fd03db0a682cf12c36cda
     - task: TerraformCLI@2
       displayName: 'Terraform Init'
       inputs:
@@ -72,14 +85,25 @@ stages:
         backendAzureRmKey: 'kubernetes-dev.tfstate'
         allowTelemetryCollection: true
         commandOptions: '-upgrade'
+<<<<<<< HEAD
 
     # Terraform Apply
     - task: TerraformCLI@2
       displayName: 'Terraform Apply'
+=======
+    
+
+
+
+    
+    - task: TerraformCLI@2
+      displayName: 'Terraform apply'
+>>>>>>> 23d1d7ac5ebfd438594fd03db0a682cf12c36cda
       inputs:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceName: 'azure-resource-manager-service-connection'
+<<<<<<< HEAD
         commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath) -auto-approve'
         allowTelemetryCollection: true
 
@@ -160,3 +184,7 @@ stages:
 #         environmentServiceName: 'azure-resource-manager-service-connection'
 #         commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
 #         allowTelemetryCollection: true
+=======
+        commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
+        allowTelemetryCollection: true
+>>>>>>> 23d1d7ac5ebfd438594fd03db0a682cf12c36cda
