@@ -17,7 +17,7 @@ stages:
     - task: DownloadSecureFile@1
       name: privateKey
       inputs:
-        secureFile: 'azure_rsa.pub'
+        secureFile: 'azure_rsa'
 
     - script: |
         # Install Ansible
@@ -27,6 +27,14 @@ stages:
         # Display Ansible version to confirm installation
         ansible --version
       displayName: 'Install Ansible'
+
+    # - script: |
+    #     mkdir -p ~/.ssh
+    #     mv $(sshKey.secureFilePath) ~/.ssh/azure_rsa
+    #     chmod 600 ~/.ssh/azure_rsa.pub  # Set correct permissions
+    #     eval "$(ssh-agent -s)"
+    #     ssh-add ~/.ssh/azure_rsa.pub
+    #   displayName: 'Configure SSH Key'
 
     - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts --private-key $(Agent.TempDirectory)/$(privateKey.secureFileName) -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
       displayName: 'Run Ansible Playbook'
