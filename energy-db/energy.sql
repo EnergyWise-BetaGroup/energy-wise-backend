@@ -1,7 +1,8 @@
-DROP TABLE IF EXISTS registration_info;
 DROP TABLE IF EXISTS appliances;
 DROP TABLE IF EXISTS smart_meter_data;
 DROP TABLE IF EXISTS co2_intensity;
+DROP TABLE IF EXISTS current_energy_sources;
+DROP TABLE IF EXISTS registration_info;
 
 
 CREATE TABLE registration_info
@@ -32,7 +33,8 @@ CREATE TABLE registration_info
     desktop_computer BOOLEAN,
     fridge BOOLEAN,
     freezer BOOLEAN,
-    PRIMARY KEY (appliance_id)
+    PRIMARY KEY (appliance_id),
+    FOREIGN KEY(registration_id) REFERENCES registration_info(registration_id)
   );
 
   CREATE TABLE smart_meter_data 
@@ -42,7 +44,8 @@ CREATE TABLE registration_info
     consumption FLOAT,
     start_datetime TIMESTAMP,
     end_datetime TIMESTAMP,
-    PRIMARY KEY(datatime_id)
+    PRIMARY KEY(datatime_id),
+    FOREIGN KEY(registration_id) REFERENCES registration_info(registration_id)
   );
 
   CREATE TABLE co2_intensity
@@ -52,12 +55,12 @@ CREATE TABLE registration_info
     co2_start_datetime TIMESTAMP,
     co2_end_datetime TIMESTAMP,
     co2_intensity INTEGER,
-    PRIMARY KEY(co2_intensity_id)
+    PRIMARY KEY(co2_intensity_id),
+    FOREIGN KEY(registration_id) REFERENCES registration_info(registration_id)
   );
 
   CREATE TABLE current_energy_sources 
   (
-    energy_id BIGINT GENERATED ALWAYS AS IDENTITY,
     biomass float,
     coal float, 
     imports float,
@@ -86,11 +89,12 @@ BEFORE UPDATE ON registration_info
 FOR EACH ROW 
 EXECUTE FUNCTION update_timestamp();
 
+
+
 INSERT INTO registration_info (name, username, email, password, house_size, postcode, region, provider, api_key, created_at, updated_at) 
 VALUES
-('John Doe', 'johndoe', 'johndoe@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 120, '1234567', 'England', 'Provider A', 'APIKEY12345', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
-('Jane Smith', 'janesmith', 'janesmith@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
-
+('John Doe', 'johndoe', 'johndoe@example.com', 'hashedpassword1', 120, '1234567', 'England', 'Provider A', 'APIKEY12345', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
+('Jane Smith', 'janesmith', 'janesmith@example.com', 'hashedpassword2', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
 
 INSERT INTO appliances (registration_id, washing_machine, dryer, electric_vehicle, laptops, desktop_computer, fridge, freezer) 
 VALUES
@@ -273,6 +277,13 @@ VALUES
 (2, 1.21, '2025-02-22T18:00:00+00:00', '2025-02-22T18:30:00+00:00'),
 (2, 0.57, '2025-02-22T18:30:00+00:00', '2025-02-22T19:00:00+00:00'),
 (2, 1.08, '2025-02-22T19:00:00+00:00', '2025-02-22T19:30:00+00:00'),
-(2, 1.02, '2025-02-22T19:30:00+00:00', '2025-02-22T20:00:00+00:00');
-
+(2, 1.02, '2025-02-22T19:30:00+00:00', '2025-02-22T20:00:00+00:00')
+(2, 0.88, '2025-02-22T20:00:00+00:00', '2025-02-22T20:30:00+00:00'),
+(2, 1.12, '2025-02-22T20:30:00+00:00', '2025-02-22T21:00:00+00:00'),
+(2, 0.91, '2025-02-22T21:00:00+00:00', '2025-02-22T21:30:00+00:00'),
+(2, 1.05, '2025-02-22T21:30:00+00:00', '2025-02-22T22:00:00+00:00'),
+(2, 0.73, '2025-02-22T22:00:00+00:00', '2025-02-22T22:30:00+00:00'),
+(2, 1.20, '2025-02-22T22:30:00+00:00', '2025-02-22T23:00:00+00:00'),
+(2, 0.60, '2025-02-22T23:00:00+00:00', '2025-02-22T23:30:00+00:00'),
+(2, 1.34, '2025-02-22T23:30:00+00:00', '2025-02-23T00:00:00+00:00');
 
