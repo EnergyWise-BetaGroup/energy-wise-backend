@@ -14,6 +14,11 @@ stages:
     pool:
       vmImage: 'ubuntu-latest' 
     steps:
+    - task: DownloadSecureFile@1
+      name: privateKey
+      inputs:
+        secureFile: 'azure_rsa'
+
     - script: |
         # Install Ansible
         sudo apt-get update
@@ -23,7 +28,15 @@ stages:
         ansible --version
       displayName: 'Install Ansible'
 
-    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts
+    - script: |
+        mkdir -p ~/.ssh
+        mv $(sshKey.secureFilePath) ~/.ssh/azure_rsa
+        chmod 600 ~/.ssh/azure_rsa  # Set correct permissions
+        eval "$(ssh-agent -s)"
+        ssh-add ~/.ssh/azure_rsa
+      displayName: 'Configure SSH Key'
+
+    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts --private-key $(Agent.TempDirectory)/$(privateKey.secureFileName) -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
       displayName: 'Run Ansible Playbook'
       env:
         AZURE_CLIENT_ID: $(ARM_CLIENT_ID)
