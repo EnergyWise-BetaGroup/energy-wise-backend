@@ -39,11 +39,8 @@
 
     # playbooks/copy-docker-compose.yml
 
-    - name: Copy Docker Compose File to VM
-      hosts: all
-      tasks:
-        - name: Copy docker-compose.yml to the VM
-          copy:
-            src: ../docker-compose.yml  # Adjust the path based on your repository structure
-            dest: /home/azureuser/docker-compose.yml  # Path on the VM
-            mode: '0644'  # Set file permissions
+    - name: Copy docker-compose.yml to the VM
+      copy:
+        src: ../docker-compose.yml  # Adjust the path based on your repository structure
+        dest: /home/azureuser/docker-compose.yml  # Path on the VM
+        mode: '0644'  # Set file permissions
