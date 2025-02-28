@@ -18,10 +18,10 @@ stages:
       name: privateKey
       inputs:
         secureFile: 'azure_rsa'
-    - task: UsePythonVersion@0
-      displayName: 'Install Python'
-      inputs:
-        versionSpec: '3.6'
+    # - task: UsePythonVersion@0
+    #   displayName: 'Install Python'
+    #   inputs:
+    #     versionSpec: '3.6'
 
     - script: |
         # Install Ansible
@@ -40,7 +40,7 @@ stages:
         ssh-add ~/.ssh/azure_rsa
       displayName: 'Configure SSH Key'
 
-    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts --private-key ~/.ssh/azure_rsa -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
+    - script: ansible-playbook ansible/playbooks/install-python.yml -i ansible/ansible_hosts --private-key ~/.ssh/azure_rsa -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
       displayName: 'Run Ansible Playbook'
       env:
         AZURE_CLIENT_ID: $(ARM_CLIENT_ID)
