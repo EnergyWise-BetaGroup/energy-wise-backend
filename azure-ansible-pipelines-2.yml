@@ -18,6 +18,10 @@ stages:
       name: privateKey
       inputs:
         secureFile: 'azure_rsa'
+    - task: UsePythonVersion@0
+      displayName: 'Install Python'
+      inputs:
+        versionSpec: '3.6'
 
     - script: |
         # Install Ansible
