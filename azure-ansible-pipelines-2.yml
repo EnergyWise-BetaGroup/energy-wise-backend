@@ -4,12 +4,6 @@ trigger:
 resources:
 - repo: self
 
-# variables:
-#   # Set your Azure credentials as pipeline variables or use Azure DevOps variable groups
-#   AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-#   AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
-#   AZURE_TENANT_ID: $(AZURE_TENANT_ID)
-#   AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
 
 stages:
 - stage: InstallAndRunAnsible
@@ -18,7 +12,7 @@ stages:
   - job: RunAnsible
     displayName: Run Ansible Playbooks
     pool:
-      vmImage: 'ubuntu-latest'  # Use an Ubuntu image for compatibility
+      vmImage: 'ubuntu-latest' 
     steps:
     - script: |
         # Install Ansible
@@ -29,17 +23,10 @@ stages:
         ansible --version
       displayName: 'Install Ansible'
 
-    - script: |
-        # Run the Docker installation playbook
-        ansible-playbook ansible/playbooks/docker-install.yml -i ansible_hosts
-      displayName: 'Run Docker Install Playbook'
-
-    # - script: |
-    #     # Run the playbook to copy the docker-compose.yml file
-    #     ansible-playbook playbooks/copy-docker-compose.yml -i ansible_hosts
-    #   displayName: 'Copy Docker Compose File to VM'
-
-    # - script: |
-    #     # Run the Docker run playbook
-    #     ansible-playbook playbooks/docker-run.yml -i ansible_hosts
-    #   displayName: 'Run Docker Run Playbook'
+    - script: ansible-playbook ansible/playbooks.yml
+      displayName: 'Run Ansible Playbook'
+      env:
+        AZURE_CLIENT_ID: $(ARM_CLIENT_ID)
+        AZURE_SECRET: $(ARM_CLIENT_SECRET)
+        AZURE_TENANT: $(ARM_TENANT_ID)
+        AZURE_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
