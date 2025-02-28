@@ -41,6 +41,13 @@ stages:
       name: publickey
       inputs:
         secureFile: 'azure_rsa.pub'
+
+    - script: rm -rf $(System.DefaultWorkingDirectory)/terraform/.terraform
+      displayName: 'Delete .terraform Folder (Fix Corrupt State)'
+
+    - script: rm -f $(System.DefaultWorkingDirectory)/terraform/.terraform.lock.hcl
+      displayName: 'Delete Terraform Lock File'
+
     - task: TerraformCLI@2
       displayName: 'Terraform Init'
       inputs:
@@ -56,6 +63,11 @@ stages:
         backendAzureRmContainerName: 'storageaccounterikrascontainer'
         backendAzureRmKey: 'kubernetes-dev.tfstate'
         allowTelemetryCollection: true
+        commandOptions: '-upgrade'
+    
+
+
+
     
     - task: TerraformCLI@2
       displayName: 'Terraform apply'
