@@ -7,18 +7,18 @@ resources:
 variables:
   tag: '$(Build.BuildId)'
   latestTag: 'latest'
-  
+
 stages:
 - stage: Build
-  displayName: Build image
+  displayName: Build Docker Image
   jobs:
   - job: Build
-    displayName: Build Image
+    displayName: Build and Push Image
     pool:
       vmImage: ubuntu-latest
     steps:
     - task: Docker@2
-      displayName: Build an image
+      displayName: Build and Push Docker Image
       inputs:
         containerRegistry: 'docker'
         repository: 'erikrasniqi/energywise'
@@ -28,19 +28,14 @@ stages:
           $(tag)
           $(latestTag)
 
-- stage: apply
-  displayName: terraform apply
+- stage: TerraformInit
+  displayName: Terraform Initialization
   jobs:
-  - job: apply
-    displayName: terraform apply
+  - job: Init
+    displayName: Terraform Init
     pool:
       vmImage: ubuntu-latest
     steps:
-
-    - task: DownloadSecureFile@1
-      name: publickey
-      inputs:
-        secureFile: 'azure_rsa.pub'
     - task: TerraformCLI@2
       displayName: 'Terraform Init'
       inputs:
@@ -56,14 +51,26 @@ stages:
         backendAzureRmContainerName: 'storageaccounterikrascontainer'
         backendAzureRmKey: 'kubernetes-dev.tfstate'
         allowTelemetryCollection: true
-    
+
+- stage: TerraformApply
+  displayName: Terraform Apply
+  dependsOn: TerraformInit
+  jobs:
+  - job: Apply
+    displayName: Apply Terraform Changes
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: DownloadSecureFile@1
+      name: publickey
+      inputs:
+        secureFile: 'azure_rsa.pub'
+
     - task: TerraformCLI@2
-      displayName: 'Terraform apply'
+      displayName: 'Terraform Apply'
       inputs:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         environmentServiceName: 'azure-resource-manager-service-connection'
         commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
         allowTelemetryCollection: true
-
-    
