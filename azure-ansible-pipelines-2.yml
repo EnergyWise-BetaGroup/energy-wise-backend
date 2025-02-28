@@ -15,23 +15,29 @@ stages:
       vmImage: 'ubuntu-latest' 
     steps:
     - task: DownloadSecureFile@1
-      name: privateKey
+      name: DownloadPrivateKey
       inputs:
-        secureFile: 'azure_rsa.pub'
+        secureFile: 'azure_rsa.pub'  # Make sure this matches the name in Secure Files
 
     - script: |
-        # Install Ansible
-        sudo apt-get update
-        sudo apt-get install -y ansible
+        # Create .ssh directory if not exists
+        mkdir -p ~/.ssh
 
-        # Display Ansible version to confirm installation
-        ansible --version
-      displayName: 'Install Ansible'
+        # Move the key to .ssh directory
+        mv $(DownloadPrivateKey.secureFilePath) ~/.ssh/azure_rsa
 
-    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts --private-key $(Agent.TempDirectory)/$(privateKey.secureFileName) -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no"'
+        # Set correct permissions for the key
+        chmod 600 ~/.ssh/azure_rsa
+
+        # Add the key to SSH agent (optional, but helps with some setups)
+        eval $(ssh-agent -s)
+        ssh-add ~/.ssh/azure_rsa
+      displayName: 'Set SSH Key Permissions'
+
+    - script: |
+        # Run the Ansible playbook using the correct key
+        ANSIBLE_CONFIG=$(System.DefaultWorkingDirectory)/ansible/ansible.cfg \
+        ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts
       displayName: 'Run Ansible Playbook'
       env:
-        AZURE_CLIENT_ID: $(ARM_CLIENT_ID)
-        AZURE_SECRET: $(ARM_CLIENT_SECRET)
-        AZURE_TENANT: $(ARM_TENANT_ID)
-        AZURE_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ANSIBLE_HOST_KEY_CHECKING: 'False'  # Avoid host key verification issues
