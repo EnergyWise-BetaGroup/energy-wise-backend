@@ -1,0 +1,45 @@
+trigger:
+- development-eri
+
+resources:
+- repo: self
+
+# variables:
+#   # Set your Azure credentials as pipeline variables or use Azure DevOps variable groups
+#   AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+#   AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
+#   AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+#   AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+
+stages:
+- stage: InstallAndRunAnsible
+  displayName: Install and Run Ansible Playbooks
+  jobs:
+  - job: RunAnsible
+    displayName: Run Ansible Playbooks
+    pool:
+      vmImage: 'ubuntu-latest'  # Use an Ubuntu image for compatibility
+    steps:
+    - script: |
+        # Install Ansible
+        sudo apt-get update
+        sudo apt-get install -y ansible
+
+        # Display Ansible version to confirm installation
+        ansible --version
+      displayName: 'Install Ansible'
+
+    - script: |
+        # Run the Docker installation playbook
+        ansible-playbook playbooks/docker-install.yml -i ansible_hosts
+      displayName: 'Run Docker Install Playbook'
+
+    - script: |
+        # Run the playbook to copy the docker-compose.yml file
+        ansible-playbook playbooks/copy-docker-compose.yml -i ansible_hosts
+      displayName: 'Copy Docker Compose File to VM'
+
+    - script: |
+        # Run the Docker run playbook
+        ansible-playbook playbooks/docker-run.yml -i ansible_hosts
+      displayName: 'Run Docker Run Playbook'
