@@ -31,7 +31,7 @@ stages:
 
     - script: |
         # Run the Docker installation playbook
-        ansible-playbook playbooks/docker-install.yml -i ansible_hosts
+        ansible-playbook ansible/playbooks/docker-install.yml -i ansible_hosts
       displayName: 'Run Docker Install Playbook'
 
     # - script: |
