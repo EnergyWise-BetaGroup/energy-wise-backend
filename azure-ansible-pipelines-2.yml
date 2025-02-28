@@ -23,7 +23,7 @@ stages:
         ansible --version
       displayName: 'Install Ansible'
 
-    - script: ansible-playbook ansible/playbooks/docker-install.yml
+    - script: ansible-playbook ansible/playbooks/docker-install.yml -i ansible/ansible_hosts
       displayName: 'Run Ansible Playbook'
       env:
         AZURE_CLIENT_ID: $(ARM_CLIENT_ID)
