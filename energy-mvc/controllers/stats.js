@@ -24,25 +24,27 @@ async function getStats(req, res) {
 async function getDonut(req, res) {
     try {
         const userId = req.body.registration_id;
-
+ 
         const donutData = await User.getOneById(userId)
-        
-
+       
+ 
         const data = { data: { donut: donutData } };
         // const postcode = donutData.data.donut.postcode;
-
-        // const response = await axios.post('http://energy-python:3001/<donut-endpoint>', data)
+ 
         const response_api = await axios.get(`https://api.carbonintensity.org.uk/regional/postcode/AL7`)
-
+ 
         const carbonIntensityData = response_api.data
         const generationMix = carbonIntensityData.data[0].data[0].generationmix
-
+ 
+        const response = await axios.post('http://energy-python:3001/generate-pie-visualisation', generationMix)
+        console.log(response.data.visualisation_html)
         // res.status(200).json({ "html": response.data.visualisation_html })
-        res.status(200).json(generationMix)
+        res.status(200).json({ "html": response.data.visualisation_html })
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
   }
+ 
 
 module.exports = {
     getStats,
