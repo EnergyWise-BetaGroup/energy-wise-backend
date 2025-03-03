@@ -36,7 +36,7 @@ async function getDonut(req, res) {
         const carbonIntensityData = response_api.data
         const generationMix = carbonIntensityData.data[0].data[0].generationmix
 
-        const response = await axios.post('http://energy-python:3001/generate-pie-visaulisation', generationMix)
+        const response = await axios.post('http://energy-python:3001/generate-pie-visualisation', generationMix)
 
         // res.status(200).json({ "html": response.data.visualisation_html })
         res.status(200).json({ "html": response.data.visualisation_html })
