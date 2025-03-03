@@ -1,7 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 
-const usersRounter = require('./router/users')
+const usersRouter = require('./router/users')
+const statsRouter = require('./router/stats')
 
 
 const app = express()
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
     res.send({title: "EnergyWise", description: "A CO2 footprint calculator and monitoring tool"})
 })
 
-app.use('/user', usersRounter)
+app.use('/users', usersRouter)
+app.use('/stats', statsRouter)
 
 module.exports = app

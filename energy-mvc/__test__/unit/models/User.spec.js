@@ -1,5 +1,5 @@
-const User = require('../../../models/User')
-const db = require('../../../database/connect')
+const {User} = require('../../../models/User')
+const db = require('../../../db/connect')
 
 describe('User Model', () => {
     beforeEach(() => jest.clearAllMocks())
@@ -9,29 +9,30 @@ describe('User Model', () => {
     describe("Create" , () => {
         it("resolves correctly when username and password submitted", async () => {
             //Arrange
+            //name, password, username, email, postcode, region
             const body = {
                 "name": "John",
                 "username": "test",
                 "password": "testing",
-                "surname": "Doe",
-                "email": "j@doe.co"
+                "email": "j@doe.co",
+                "region": "London"
             }
-            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{login_id: 1}]})
-            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{...body, login_id: 1}]})
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{registration_id: 1}]})
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{...body, registration_id: 1}]})
 
             //Act
             const response = await User.create(body)
 
             //Assert
             expect(response).toHaveProperty('username')
-            expect(response).toHaveProperty('login_id')
+            expect(response).toHaveProperty('registration_id')
             expect(response.username).toBe(body.username)
-            expect(response.login_id).toBe(1)
-            expect(db.query).toHaveBeenCalledWith("INSERT INTO login_info (name, surname, username, password, email) VALUES ($1, $2, $3, $4, $5) RETURNING login_id;", 
-                [body.name, body.surname, body.username, body.password, body.email]);
-            expect(db.query).toHaveBeenCalledWith("SELECT login_id, username, name, surname, email FROM login_info WHERE login_id = $1", [1]);
+            expect(response.registration_id).toBe(1)
+            expect(db.query).toHaveBeenCalledWith("INSERT INTO registration_info (name, password, username, email, postcode, region) VALUES ($1, $2, $3, $4, $5, $6) RETURNING registration_id;", 
+                [body.name, body.password, body.username, body.email, body.postcode, body.region]);
         });
         it("throws error if password or username missing", async () => {
+            
             //Arrange
             const body1 = {
                 "username": "Test",
@@ -49,20 +50,20 @@ describe('User Model', () => {
         it("resolves correctly when id submitted", async () => {
             //Arrange
             const body = {
-                "login_id": 1,
+                "registration_id": 1,
                 "username": "Test"
             }
-            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{username: body.username, login_id: body.login_id}]})
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{username: body.username, registration_id: body.registration_id}]})
 
             //Act
-            const response = await User.getOneById(body.login_id)
+            const response = await User.getOneById(body.registration_id)
 
             //Assert
             expect(response).toHaveProperty('username')
-            expect(response).toHaveProperty('login_id')
+            expect(response).toHaveProperty('registration_id')
             expect(response.username).toBe(body.username)
-            expect(response.login_id).toBe(body.login_id)
-            expect(db.query).toHaveBeenCalledWith("SELECT login_id, username, name, surname, email FROM login_info WHERE login_id = $1", [body.login_id]);
+            expect(response.registration_id).toBe(body.registration_id)
+            expect(db.query).toHaveBeenCalledWith("SELECT * FROM registration_info WHERE registration_id = $1", [body.registration_id]);
         });
         it("throws error if return from db is empty", async () => {
             //Arrange
@@ -76,20 +77,20 @@ describe('User Model', () => {
         it("resolves correctly when name submitted", async () => {
             //Arrange
             const body = {
-                "login_id": 1,
+                "registration_id": 1,
                 "username": "Test"
             }
-            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{username: body.username, login_id: body.login_id}]})
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [{username: body.username, registration_id: body.registration_id}]})
 
             //Act
             const response = await User.getOneByUsername(body.username)
 
             //Assert
             expect(response).toHaveProperty('username')
-            expect(response).toHaveProperty('login_id')
+            expect(response).toHaveProperty('registration_id')
             expect(response.username).toBe(body.username)
-            expect(response.login_id).toBe(body.login_id)
-            expect(db.query).toHaveBeenCalledWith("SELECT login_id, username, password FROM login_info WHERE username = $1", [body.username]);
+            expect(response.registration_id).toBe(body.registration_id)
+            expect(db.query).toHaveBeenCalledWith("SELECT registration_id, username, password FROM registration_info WHERE username = $1", [body.username]);
         });
         it("throws error if return from db is empty", async () => {
             //Arrange
