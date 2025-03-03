@@ -25,6 +25,21 @@
         name: ec2-user  # Change to your actual username if different
         groups: docker
         append: yes
+        
+    - name: Install Python 3.10
+      apt:
+        name:
+          - python3.10
+          - python3.10-venv
+          - python3.10-dev
+        state: present
+
+    - name: Set Python 3.10 as default
+      command: update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
+
+    - name: Verify Python version
+      command: python3 --version
+      register: python_version
 
     - name: Install Docker Compose
       shell: |
