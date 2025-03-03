@@ -72,6 +72,20 @@ resource "azurerm_network_security_rule" "postgress" {
   network_security_group_name = azurerm_network_security_group.nsg.name
 }
 
+resource "azurerm_network_security_rule" "http_80" {
+  name                        = "allow-http-80"
+  priority                    = 130
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_address_prefix       = "*"
+  source_port_range           = "*"
+  destination_address_prefix  = "*"
+  destination_port_range      = 80
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg.name
+}
+
 resource "azurerm_public_ip" "pip" {
   name                = "my-public-ip"
   location            = azurerm_resource_group.rg.location

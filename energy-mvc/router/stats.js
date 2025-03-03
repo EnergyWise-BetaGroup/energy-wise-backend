@@ -4,6 +4,7 @@ const authenticator = require("../middleware/authenticator");
 
 statsRouter = Router()
 
-statsRouter.get('/', authenticator, statsController.getStats)
+statsRouter.get('/line-graph', authenticator, statsController.getStats)
+statsRouter.get('/donut', authenticator, statsController.getDonut)
 
 module.exports = statsRouter
