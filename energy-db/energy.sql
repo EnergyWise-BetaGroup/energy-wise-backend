@@ -16,8 +16,8 @@ CREATE TABLE registration_info
     region VARCHAR(30) NOT NULL,
     provider VARCHAR(50),
     api_key VARCHAR(50),
-    meter_mpan VARCHAR(20),
-    meter_serial VARCHAR(20),
+    meter_mpan VARCHAR(50),
+    meter_serial VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, 
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY(registration_id)

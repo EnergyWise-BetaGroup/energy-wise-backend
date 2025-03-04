@@ -4,6 +4,7 @@ const axios = require('axios')
 
 async function getStats(req, res) {
     try {
+      console.log("getstats hit");
         const userId = req.body.registration_id;
 
         const currentUser = await User.getOneById(userId)
@@ -57,4 +58,5 @@ async function getDonut(req, res) {
 
 module.exports = {
     getStats,
+    getDonut
 }
