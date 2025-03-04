@@ -11,11 +11,11 @@ async function getStats(req, res) {
     try {
         const userId = req.body.registration_id;
         const currentTime = new Date();
-        const timeIn30Mins = new Date( currentTime.getTime + 30*60000);
+        const expireTime = new Date(currentTime.getTime() + 30*60000);
 
         let data
 
-        if (cache.hasOwnProperty(userId) && currentTime < cache[userId].date) {
+        if (cache.hasOwnProperty(userId) && currentTime < cache[userId].expireTime) {
             data = cache[userId].data;
         } else {
             const currentUser = await User.getOneById(userId);
@@ -52,7 +52,7 @@ async function getStats(req, res) {
             data = {
                 data: { meter: meterData, intensity: intensityData },
             };
-            cache[userId] = { date: timeIn30Mins, data: data };
+            cache[userId] = { expireTime: expireTime, data: data };
         }
 
         const response = await axios.post(
@@ -95,11 +95,11 @@ async function getGauge(req, res) {
     try {
         const userId = req.body.registration_id;
         const currentTime = new Date();
-        const timeIn30Mins = new Date( currentTime.getTime + 30*60000);
+        const expireTime = new Date(currentTime.getTime() + 30*60000);
 
         let data
 
-        if (cache.hasOwnProperty(userId) && currentTime < cache[userId].date) {
+        if (cache.hasOwnProperty(userId) && currentTime < cache[userId].expireTime) {
             data = cache[userId].data;
         } else {
             const currentUser = await User.getOneById(userId);
@@ -136,7 +136,7 @@ async function getGauge(req, res) {
             data = {
                 data: { meter: meterData, intensity: intensityData },
             };
-            cache[userId] = { date: timeIn30Mins, data: data };
+            cache[userId] = { expireTime: expireTime, data: data };
         }
 
         const response = await axios.post(
