@@ -4,7 +4,6 @@ const axios = require('axios')
 
 async function getStats(req, res) {
     try {
-      console.log("getstats hit");
         const userId = req.body.registration_id;
 
         const currentUser = await User.getOneById(userId)
@@ -15,8 +14,6 @@ async function getStats(req, res) {
                 ])
         // const octopusMeterData = await fetchExternalMeterData(currentUser.api_key, currentUser.meter_mpan, currentUser.meter_serial)
         // const energyCarbonData = await fetchExternalCO2Data(currentUser.postcode)
-
-        console.log(energyCarbonData.data.data.data);
 
         const meterData = octopusMeterData.data.results.map(reading => {
           return {datapoint: reading.consumption, start_datetime: reading.interval_start, end_datetime: reading.interval_end}
@@ -56,7 +53,40 @@ async function getDonut(req, res) {
     }
   }
 
+  async function getGauge(req, res) {
+    try {
+        const userId = req.body.registration_id;
+
+        const currentUser = await User.getOneById(userId)
+
+        const [octopusMeterData, energyCarbonData] = await Promise.all([
+                  fetchExternalMeterData(currentUser.api_key, currentUser.meter_mpan, currentUser.meter_serial),
+                  fetchExternalCO2Data(currentUser.postcode)
+                ])
+        // const octopusMeterData = await fetchExternalMeterData(currentUser.api_key, currentUser.meter_mpan, currentUser.meter_serial)
+        // const energyCarbonData = await fetchExternalCO2Data(currentUser.postcode)
+
+        const meterData = octopusMeterData.data.results.map(reading => {
+          return {datapoint: reading.consumption, start_datetime: reading.interval_start, end_datetime: reading.interval_end}
+        })
+
+        const intensityData = energyCarbonData.data.data.data.map(carbon => {
+          return {datapoint: carbon.intensity.forecast, start_datetime: carbon.from, end_datetime: carbon.to}
+        })
+
+        const data = {data: {meter: meterData, intensity: intensityData}}
+
+        const response = await axios.post('http://energy-python:3001/generate-gauge-visualisation', data)
+
+        res.status(200).json({ "html": response.data.visualisation_html })
+        //res.status(200).json({data: {meter: meterData, intensity: intensityData}})
+    } catch (err) {
+      res.status(404).json({ error: err.message });
+    }
+  }
+
 module.exports = {
     getStats,
-    getDonut
+    getDonut,
+    getGauge
 }
