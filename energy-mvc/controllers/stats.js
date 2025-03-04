@@ -11,11 +11,12 @@ async function getStats(req, res) {
     try {
         const userId = req.body.registration_id;
         const currentTime = new Date();
-        const timeIn30Mins = new Date();
-        timeIn30Mins.setMinutes(timeIn30Mins.getMinutes() + 30);
+        const timeIn30Mins = new Date( currentTime.getTime + 30*60000);
 
-        if (cache.hasOwnProperty(userId) && currentTime < cache.userId.date) {
-            const data = cache.userId.data;
+        let data
+
+        if (cache.hasOwnProperty(userId) && currentTime < cache[userId].date) {
+            data = cache[userId].data;
         } else {
             const currentUser = await User.getOneById(userId);
 
@@ -48,7 +49,7 @@ async function getStats(req, res) {
                 }
             );
 
-            const data = {
+            data = {
                 data: { meter: meterData, intensity: intensityData },
             };
             cache[userId] = { date: timeIn30Mins, data: data };
@@ -94,14 +95,13 @@ async function getGauge(req, res) {
     try {
         const userId = req.body.registration_id;
         const currentTime = new Date();
-        const timeIn30Mins = new Date();
-        timeIn30Mins.setMinutes(timeIn30Mins.getMinutes() + 30);
+        const timeIn30Mins = new Date( currentTime.getTime + 30*60000);
 
-        if (cache.hasOwnProperty(userId) && currentTime < cache.userId.date) {
-            const data = cache.userId.data;
+        let data
+
+        if (cache.hasOwnProperty(userId) && currentTime < cache[userId].date) {
+            data = cache[userId].data;
         } else {
-            const userId = req.body.registration_id;
-
             const currentUser = await User.getOneById(userId);
 
             const [octopusMeterData, energyCarbonData] = await Promise.all([
@@ -133,7 +133,7 @@ async function getGauge(req, res) {
                 }
             );
 
-            const data = {
+            data = {
                 data: { meter: meterData, intensity: intensityData },
             };
             cache[userId] = { date: timeIn30Mins, data: data };
