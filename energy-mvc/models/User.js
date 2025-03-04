@@ -1,5 +1,6 @@
 const db = require("../db/connect")
 const axios = require('axios')
+const { fetchExternalMeterInfo } = require("../services/externalAPIService")
 
 class User {
     constructor({ registration_id, name, password, username, email, postcode, region, meter_mpan=null, meter_serial=null, api_key =null}) {
@@ -39,18 +40,13 @@ class User {
         const newId = response.rows[0].registration_id;
         const newUser = await User.getOneById(newId);
         newUser.password = "#"
-        newUser.updateMeterInfo(data.account_number, data.api_key)
+        newUser.updateMeterInfo(data.account_number)
         return newUser;
     }
 
-    async updateMeterInfo(account, api) {
+    async updateMeterInfo(account) {
         try{
-            const token = Buffer.from(`${api}:`).toString('base64');
-            const response = await axios.get(`https://api.octopus.energy/v1/accounts/${account}`, {
-                headers: {
-                    "Authorization": `Basic ${token}`
-                }
-            })
+            const response = await fetchExternalMeterInfo(this.api_key, account)
             const data = response.data
             this.meter_mpan = data.properties[0].electricity_meter_points[0].mpan
             this.meter_serial = data.properties[0].electricity_meter_points[0].meters[0].serial_number
