@@ -88,10 +88,10 @@ BEFORE UPDATE ON registration_info
 FOR EACH ROW 
 EXECUTE FUNCTION update_timestamp();
 
-INSERT INTO registration_info (name, username, email, password, house_size, postcode, region, provider, api_key, created_at, updated_at) 
+INSERT INTO registration_info (name, username, email, password, house_size, postcode, region, provider, api_key, meter_serial, meter_mpan, created_at, updated_at) 
 VALUES
-('John Doe', 'johndoe', 'johndoe@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 120, '1234567', 'England', 'Provider A', 'APIKEY12345', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
-('Jane Smith', 'janesmith', 'janesmith@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
+('John Doe', 'johndoe', 'johndoe@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 120, 'AL7', 'England', 'Provider A', 'sk_live_3ZU0cE3DVf6ep1KNCpAHbXeH', '20L3344343', '1012464613107', '2024-02-25 00:00:00', '2024-02-25 00:00:00'),
+('Jane Smith', 'janesmith', 'janesmith@example.com', '$2b$10$WoP3NXT3j2iSJfCB3iSWguqddO3FUffoilTDYrZhnclYEDeBVqoKG', 95, '7654321', 'Scotland', 'Provider B', 'APIKEY67890', 'null', 'null', '2024-02-25 00:00:00', '2024-02-25 00:00:00');
 
 
 INSERT INTO appliances (registration_id, washing_machine, dryer, electric_vehicle, laptops, desktop_computer, fridge, freezer) 

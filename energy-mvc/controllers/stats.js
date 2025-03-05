@@ -56,6 +56,8 @@ async function getStats(req, res) {
             cache[userId] = { expireTime: expireTime, data: data };
         }
 
+        console.log(data);
+
         const response = await axios.post(
             "http://energy-python:3001/generate-visualisation",
             data
@@ -157,16 +159,22 @@ async function getTable(req, res) {
         
         const userData = await User.getOneById(userId);
 
-        const dataResponse = fetchFutureCO2Data(userData.postcode)
+        const dataResponse = await fetchFutureCO2Data(userData.postcode)
 
-        const filteredResponse = (await dataResponse).data.data.map(
+        //console.log(dataResponse);
+
+        const filteredResponse = dataResponse.data.data.data.map(
             dataPoint => {return( {start: dataPoint.from, intensity: dataPoint.intensity.forecast})}
         )
+
+        //console.log(filteredResponse);
 
         const response = await axios.post(
             "http://energy-python:3001/generate-table-visualisation",
             filteredResponse
         );
+
+        //console.log(response);
 
         res.status(200).json({ html: response.data.visualisation_html });
     } catch (err) {
