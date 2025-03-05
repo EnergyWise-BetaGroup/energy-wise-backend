@@ -6,5 +6,7 @@ statsRouter = Router()
 
 statsRouter.get('/line-graph', authenticator, statsController.getStats)
 statsRouter.get('/donut', authenticator, statsController.getDonut)
+statsRouter.get('/gauge', authenticator, statsController.getGauge)
+statsRouter.get('/table', authenticator, statsController.getTable)
 
 module.exports = statsRouter
