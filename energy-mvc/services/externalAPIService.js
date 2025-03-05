@@ -63,7 +63,6 @@ const fetchFutureCO2Data = async (postcode) => {
 
     timeIn2HrBlocks.setHours(2*Math.floor(currentTime.getHours()/2) )
     timeIn2HrBlocks.setMinutes(1)
-    const token = Buffer.from(`${api}:`).toString("base64");
     const response = await axios.get(
       `https://api.carbonintensity.org.uk/regional/intensity/${timeIn2HrBlocks.toISOString()}/fw24h/postcode/${postcode}`);
     return response;

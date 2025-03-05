@@ -55,14 +55,15 @@ async function getStats(req, res) {
             };
             cache[userId] = { expireTime: expireTime, data: data };
         }
-
+        console.log("Passed data to /generate-visualisation:");
+        console.log(data);
         const response = await axios.post(
             "http://energy-python:3001/generate-visualisation",
             data
         );
 
-        //res.status(200).json({ html: response.data.visualisation_html });
-        res.status(200).json(data)
+        res.status(200).json({ html: response.data.visualisation_html });
+        //res.status(200).json(data)
     } catch (err) {
         res.status(404).json({ error: err.message });
     }
@@ -81,6 +82,8 @@ async function getDonut(req, res) {
         const carbonIntensityData = response_api.data;
         const generationMix = carbonIntensityData.data[0].data[0].generationmix;
 
+        console.log(generationMix);
+        console.log("Passed data to /generate-pie-visualisation:");
         const response = await axios.post(
             "http://energy-python:3001/generate-pie-visualisation",
             generationMix
@@ -139,13 +142,14 @@ async function getGauge(req, res) {
             };
             cache[userId] = { expireTime: expireTime, data: data };
         }
-
+        console.log("Passed data to /generate-gauge-visualisation:");
+        console.log(data);
         const response = await axios.post(
             "http://energy-python:3001/generate-gauge-visualisation",
             data
         );
 
-        res.status(200).json({ gauge1: response.data.gauge1, gauge2: response.data.gauge1, current:  response.data.current});
+        res.status(200).json(response.data);
     } catch (err) {
         res.status(404).json({ error: err.message });
     }
@@ -159,9 +163,12 @@ async function getTable(req, res) {
 
         const dataResponse = fetchFutureCO2Data(userData.postcode)
 
-        const filteredResponse = (await dataResponse).data.data.map(
+        const filteredResponse = (await dataResponse).data.data.data.map(
             dataPoint => {return( {start: dataPoint.from, intensity: dataPoint.intensity.forecast})}
         )
+
+        console.log("Passed data to /generate-table-visualisation:");
+        console.log(filteredResponse);
 
         const response = await axios.post(
             "http://energy-python:3001/generate-table-visualisation",
