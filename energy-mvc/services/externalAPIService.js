@@ -49,14 +49,33 @@ const fetchExternalMeterInfo = async (api, account) => {
         },
       }
     );
+    return response;
   } catch (err) {
     console.error("Error fetching external data:");
     throw error;
   }
 };
 
+const fetchFutureCO2Data = async (postcode) => {
+  try {
+    const currentTime = new Date('2025-03-05T19:05:36.867Z')
+    const timeIn2HrBlocks = new Date()
+
+    timeIn2HrBlocks.setHours(2*Math.floor(currentTime.getHours()/2) )
+    timeIn2HrBlocks.setMinutes(1)
+    const token = Buffer.from(`${api}:`).toString("base64");
+    const response = await axios.get(
+      `https://api.carbonintensity.org.uk/regional/intensity/${timeIn2HrBlocks.toISOString()}/fw24h/postcode/${postcode}`);
+    return response;
+  } catch (err) {
+    console.error("Error fetching external data:");
+    throw error;
+  }
+}
+
 module.exports = {
   fetchExternalMeterData,
   fetchExternalCO2Data,
-  fetchExternalMeterInfo
+  fetchExternalMeterInfo,
+  fetchFutureCO2Data
 };

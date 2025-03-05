@@ -2,6 +2,7 @@ const { User } = require("../models/User");
 const {
     fetchExternalMeterData,
     fetchExternalCO2Data,
+    fetchFutureCO2Data
 } = require("../services/externalAPIService");
 const axios = require("axios");
 
@@ -60,8 +61,8 @@ async function getStats(req, res) {
             data
         );
 
-        res.status(200).json({ html: response.data.visualisation_html });
-        //res.status(200).json({data: {meter: meterData, intensity: intensityData}})
+        //res.status(200).json({ html: response.data.visualisation_html });
+        res.status(200).json(data)
     } catch (err) {
         res.status(404).json({ error: err.message });
     }
@@ -144,8 +145,30 @@ async function getGauge(req, res) {
             data
         );
 
+        res.status(200).json({ gauge1: response.data.gauge1, gauge2: response.data.gauge1, current:  response.data.current});
+    } catch (err) {
+        res.status(404).json({ error: err.message });
+    }
+}
+
+async function getTable(req, res) {
+    try {
+        const userId = req.body.registration_id;
+        
+        const userData = await User.getOneById(userId);
+
+        const dataResponse = fetchFutureCO2Data(userData.postcode)
+
+        const filteredResponse = (await dataResponse).data.data.map(
+            dataPoint => {return( {start: dataPoint.from, intensity: dataPoint.intensity.forecast})}
+        )
+
+        const response = await axios.post(
+            "http://energy-python:3001/generate-table-visualisation",
+            filteredResponse
+        );
+
         res.status(200).json({ html: response.data.visualisation_html });
-        //res.status(200).json({data: {meter: meterData, intensity: intensityData}})
     } catch (err) {
         res.status(404).json({ error: err.message });
     }
@@ -155,4 +178,5 @@ module.exports = {
     getStats,
     getDonut,
     getGauge,
+    getTable
 };
